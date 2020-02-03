@@ -10,6 +10,8 @@ public class NavAgentExample : MonoBehaviour
     public int CurrentIndex = 0;
     public bool HasPath = false;
     public bool PathPending = false;
+    public bool PathStale = false;
+    [SerializeField] public NavMeshPathStatus PathStatus = NavMeshPathStatus.PathInvalid;
 
     private NavMeshAgent _navMeshAgent = null;
 
@@ -25,18 +27,14 @@ public class NavAgentExample : MonoBehaviour
 	{
         if (WaypointNetwork == null) return;
         int incStep = increment ? 1 : 0;
-        Transform nextWaypointTransform = null;
-        while (nextWaypointTransform == null)
-		{
-            int nextWaypoint = (CurrentIndex + incStep >= WaypointNetwork.Waypoints.Count) ? 0 : CurrentIndex + incStep;
-            nextWaypointTransform = WaypointNetwork.Waypoints[nextWaypoint];
+        int nextWaypoint = (CurrentIndex + incStep >= WaypointNetwork.Waypoints.Count) ? 0 : CurrentIndex + incStep;
+        Transform nextWaypointTransform = WaypointNetwork.Waypoints[nextWaypoint];
 
-            if (nextWaypointTransform != null)
-			{
-                CurrentIndex = nextWaypoint;
-                _navMeshAgent.destination = nextWaypointTransform.position;
-                return;
-			}
+        if (nextWaypointTransform != null)
+        {
+            CurrentIndex = nextWaypoint;
+            _navMeshAgent.destination = nextWaypointTransform.position;
+            return;
         }
         CurrentIndex++;
     }
@@ -46,10 +44,15 @@ public class NavAgentExample : MonoBehaviour
     {
         HasPath = _navMeshAgent.hasPath;
         PathPending = _navMeshAgent.pathPending;
+        PathStale = _navMeshAgent.isPathStale;
+        PathStatus = _navMeshAgent.pathStatus;
 
-        if (!HasPath && !PathPending)
+        if ((!HasPath && !PathPending) || PathStatus == NavMeshPathStatus.PathInvalid)
 		{
             SetNextDestination(true);
-		}
+		} else if (PathStale)
+        {
+            SetNextDestination(false);
+        }
     }
 }

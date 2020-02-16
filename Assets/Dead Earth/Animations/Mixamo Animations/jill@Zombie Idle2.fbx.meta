@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 03e146c12a26e4d2cb4b2f02f453a4cf
+guid: f95a1bcb5191c4cef89b7fbb0ee8c884
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -231,7 +231,7 @@ ModelImporter:
     400222: TongueBack
     400224: TongueMid
     400226: TongueTip
-    7400000: Zombie Attack
+    7400000: Zombie Idle2
     9500000: //RootNode
     2186277476908879412: ImportLogs
   externalObjects: {}
@@ -266,10 +266,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Zombie Attack
+      name: Zombie Idle2
       takeName: mixamo.com
       firstFrame: 0
-      lastFrame: 79
+      lastFrame: 120
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

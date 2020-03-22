@@ -47,7 +47,7 @@ public class NavAgentNoRootMotion : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int turnOnSpot;
+        int turnOnSpot = 0;
         HasPath = _navMeshAgent.hasPath;
         PathPending = _navMeshAgent.pathPending;
         PathStale = _navMeshAgent.isPathStale;
@@ -55,20 +55,22 @@ public class NavAgentNoRootMotion : MonoBehaviour
 
         Vector3 cross = Vector3.Cross(transform.forward, _navMeshAgent.desiredVelocity.normalized);
         float horizontal = cross.y < 0 ? -cross.magnitude : cross.magnitude;
+        horizontal = Mathf.Clamp(horizontal * 2.32f, -2.32f, 2.32f);
 
-        Debug.Log(_navMeshAgent.desiredVelocity.magnitude);
-        if (_navMeshAgent.desiredVelocity.magnitude < 1.0f && (Vector3.Angle(transform.forward, _navMeshAgent.desiredVelocity) > 50.0f))
+        Debug.Log("magnitude : " + _navMeshAgent.desiredVelocity.magnitude +
+            " angle : " + Vector3.Angle(transform.forward, _navMeshAgent.desiredVelocity));
+        if (!HasPath) _navMeshAgent.speed = 0.1f;
+        if (_navMeshAgent.desiredVelocity.magnitude < 1.0f && Vector3.Angle(transform.forward, _navMeshAgent.desiredVelocity) > 10.0f)
         {
             Debug.Log("turnOnSpot");
             _navMeshAgent.speed = 0.1f;
             turnOnSpot = (int)Mathf.Sign(horizontal);
-        } else
+        } else if (!PathPending)
         {
             _navMeshAgent.speed = originalMaxSpeed;
             turnOnSpot = 0;
         }
         
-        horizontal = Mathf.Clamp(horizontal * 4.32f, -2.32f, 2.32f);
         _animator.SetFloat("Horizontal", horizontal, 0.1f, Time.deltaTime);
         _animator.SetFloat("Vertical", _navMeshAgent.desiredVelocity.magnitude, 0.1f, Time.deltaTime);
         _animator.SetInteger("TurnOnSpot", turnOnSpot);
